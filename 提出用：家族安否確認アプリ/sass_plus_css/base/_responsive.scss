@@ -1,0 +1,45 @@
+@use "sass:map";
+@use "sass:math";
+
+$breakpoints: (
+    'sp': 599px,
+    'tab-pc': 600px,
+    'sp-tab': 1024px,
+    'pc': 1025px,
+) !default;
+
+// 以下の2つはコンパイルエラーになってしまう書き方
+// @mixin mq($breakpoint: sp) {
+//     @media screen and (#{map.get($breakpoints, $breakpoint)}) {
+//         @content;
+//     }
+// }
+// @mixin mq($breakpoint: sp) {
+//     @media #{map.get($breakpoints, $breakpoint)} {
+//         @content;
+//     }
+// }
+
+@mixin mq-min($breakpoint) {
+    @media screen and (min-width: #{map.get($breakpoints, $breakpoint)}) {
+        @content;
+    }
+}
+
+@mixin mq-max($breakpoint) {
+    @media screen and (max-width: #{map.get($breakpoints, $breakpoint)}) {
+        @content;
+    }
+}
+
+@function strip-unit($number) {
+    @if type-of($number) == 'number' and not unitless($number) {
+      @return math.div($number, ($number * 0 + 1));
+    }
+    @return $number;
+}
+
+@mixin font-size($size: 16, $base: 10) {
+    $size: strip-unit($size);
+    font-size: math.div($size, $base) * 1rem;
+}
